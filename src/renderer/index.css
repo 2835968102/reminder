@@ -312,8 +312,48 @@ body {
 .sedentary-desc {
   font-size: 14px;
   color: #888;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   line-height: 1.6;
+}
+
+/* 倒计时显示 */
+.countdown-block {
+  background: #f0f7ff;
+  border: 1px solid #bae0ff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.countdown-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.countdown-time {
+  font-size: 40px;
+  font-weight: 700;
+  color: #1890ff;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 12px;
+}
+
+.countdown-bar-bg {
+  height: 6px;
+  background: #d6e8ff;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.countdown-bar-fill {
+  height: 100%;
+  background: #1890ff;
+  border-radius: 3px;
+  transition: width 1s linear;
 }
 
 .sedentary-interval {

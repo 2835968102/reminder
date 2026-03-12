@@ -9,6 +9,7 @@ function App() {
   const [reminders, setReminders] = useState([])
   const [refresh, setRefresh] = useState(0)
   const [popupReminder, setPopupReminder] = useState(null)
+  const [sedentaryFireCount, setSedentaryFireCount] = useState(0)
 
   useEffect(() => {
     loadReminders()
@@ -21,6 +22,9 @@ function App() {
     // 监听弹窗提醒事件
     window.electronAPI.onReminderPopup((reminder) => {
       setPopupReminder(reminder)
+      if (reminder.id === 'sedentary') {
+        setSedentaryFireCount(prev => prev + 1)
+      }
     })
   }, [refresh])
 
@@ -76,7 +80,7 @@ function App() {
       )}
 
       {activeTab === 'sedentary' && (
-        <SedentaryReminder />
+        <SedentaryReminder fireCount={sedentaryFireCount} />
       )}
 
       {popupReminder && (

@@ -1,23 +1,74 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-function SedentaryReminder() {
+function formatTime(seconds) {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = seconds % 60
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+}
+
+function SedentaryReminder({ fireCount }) {
   const [enabled, setEnabled] = useState(false)
   const [intervalMinutes, setIntervalMinutes] = useState(30)
   const [loading, setLoading] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(0)
+  const tickRef = useRef(null)
+  const intervalMinutesRef = useRef(intervalMinutes)
+
+  // 保持 ref 和 state 同步，供 tick 闭包读取
+  useEffect(() => {
+    intervalMinutesRef.current = intervalMinutes
+  }, [intervalMinutes])
 
   useEffect(() => {
     window.electronAPI.getSedentary().then(settings => {
       setEnabled(settings.enabled)
       setIntervalMinutes(settings.intervalMinutes)
+      intervalMinutesRef.current = settings.intervalMinutes
+      if (settings.enabled) {
+        startCountdown(settings.intervalMinutes)
+      }
     })
+    return () => stopCountdown()
   }, [])
+
+  // 通知触发后重置倒计时
+  useEffect(() => {
+    if (fireCount > 0 && enabled) {
+      startCountdown(intervalMinutesRef.current)
+    }
+  }, [fireCount])
+
+  const startCountdown = (minutes) => {
+    stopCountdown()
+    setTimeLeft(minutes * 60)
+    tickRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) return intervalMinutesRef.current * 60
+        return prev - 1
+      })
+    }, 1000)
+  }
+
+  const stopCountdown = () => {
+    if (tickRef.current) {
+      clearInterval(tickRef.current)
+      tickRef.current = null
+    }
+    setTimeLeft(0)
+  }
 
   const handleToggle = async () => {
     setLoading(true)
     const newEnabled = !enabled
-    const settings = { enabled: newEnabled, intervalMinutes }
-    await window.electronAPI.setSedentary(settings)
+    await window.electronAPI.setSedentary({ enabled: newEnabled, intervalMinutes })
     setEnabled(newEnabled)
+    if (newEnabled) {
+      startCountdown(intervalMinutes)
+    } else {
+      stopCountdown()
+    }
     setLoading(false)
   }
 
@@ -32,9 +83,24 @@ function SedentaryReminder() {
     if (enabled) {
       setLoading(true)
       await window.electronAPI.setSedentary({ enabled, intervalMinutes })
+      startCountdown(intervalMinutes)
       setLoading(false)
     }
   }
+
+  const handlePreset = async (min) => {
+    setIntervalMinutes(min)
+    intervalMinutesRef.current = min
+    if (enabled) {
+      setLoading(true)
+      await window.electronAPI.setSedentary({ enabled, intervalMinutes: min })
+      startCountdown(min)
+      setLoading(false)
+    }
+  }
+
+  const totalSeconds = intervalMinutes * 60
+  const progress = enabled && totalSeconds > 0 ? (totalSeconds - timeLeft) / totalSeconds : 0
 
   return (
     <div className="sedentary-card">
@@ -45,6 +111,19 @@ function SedentaryReminder() {
           ? `已开启，每 ${intervalMinutes} 分钟提醒你起来活动`
           : '设置间隔时间，开启后定时提醒你起来活动'}
       </p>
+
+      {enabled && (
+        <div className="countdown-block">
+          <div className="countdown-label">距离下次提醒</div>
+          <div className="countdown-time">{formatTime(timeLeft)}</div>
+          <div className="countdown-bar-bg">
+            <div
+              className="countdown-bar-fill"
+              style={{ width: `${progress * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="sedentary-interval">
         <label>提醒间隔</label>
@@ -66,14 +145,7 @@ function SedentaryReminder() {
             <button
               key={min}
               className={`preset-btn${intervalMinutes === min ? ' active' : ''}`}
-              onClick={async () => {
-                setIntervalMinutes(min)
-                if (enabled) {
-                  setLoading(true)
-                  await window.electronAPI.setSedentary({ enabled, intervalMinutes: min })
-                  setLoading(false)
-                }
-              }}
+              onClick={() => handlePreset(min)}
               disabled={loading}
             >
               {min} 分钟
