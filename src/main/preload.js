@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateReminder: (reminder) => ipcRenderer.invoke('update-reminder', reminder),
   deleteReminder: (id) => ipcRenderer.invoke('delete-reminder', id),
   onReminderUpdated: (callback) => ipcRenderer.on('reminder-updated', (event, data) => callback(event, data)),
-  onReminderPopup: (callback) => ipcRenderer.on('show-reminder-popup', (event, data) => callback(data))
+  onReminderPopup: (callback) => ipcRenderer.on('show-reminder-popup', (event, data) => callback(data)),
+  getSedentary: () => ipcRenderer.invoke('get-sedentary'),
+  setSedentary: (settings) => ipcRenderer.invoke('set-sedentary', settings)
 })

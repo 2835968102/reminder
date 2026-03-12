@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import ReminderForm from './components/ReminderForm'
 import ReminderList from './components/ReminderList'
 import ReminderPopup from './components/ReminderPopup'
+import SedentaryReminder from './components/SedentaryReminder'
 
 function App() {
+  const [activeTab, setActiveTab] = useState('reminder')
   const [reminders, setReminders] = useState([])
   const [refresh, setRefresh] = useState(0)
   const [popupReminder, setPopupReminder] = useState(null)
@@ -46,15 +48,36 @@ function App() {
     <div className="container">
       <div className="header">
         <h1>⏰ 定时提醒</h1>
+        <div className="tabs">
+          <button
+            className={`tab-btn${activeTab === 'reminder' ? ' active' : ''}`}
+            onClick={() => setActiveTab('reminder')}
+          >
+            📋 定时提醒
+          </button>
+          <button
+            className={`tab-btn${activeTab === 'sedentary' ? ' active' : ''}`}
+            onClick={() => setActiveTab('sedentary')}
+          >
+            🧘 久坐提醒
+          </button>
+        </div>
       </div>
 
-      <ReminderForm onAdd={handleAddReminder} />
+      {activeTab === 'reminder' && (
+        <>
+          <ReminderForm onAdd={handleAddReminder} />
+          <ReminderList
+            reminders={reminders}
+            onUpdate={handleUpdateReminder}
+            onDelete={handleDeleteReminder}
+          />
+        </>
+      )}
 
-      <ReminderList
-        reminders={reminders}
-        onUpdate={handleUpdateReminder}
-        onDelete={handleDeleteReminder}
-      />
+      {activeTab === 'sedentary' && (
+        <SedentaryReminder />
+      )}
 
       {popupReminder && (
         <ReminderPopup

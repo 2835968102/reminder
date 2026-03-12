@@ -255,3 +255,195 @@ body {
 .popup-close-btn:hover {
   background-color: #40a9ff;
 }
+
+/* 选项卡 */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tab-btn {
+  padding: 8px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  background: white;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.tab-btn.active {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: white;
+}
+
+/* 久坐提醒卡片 */
+.sedentary-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 40px 30px;
+  text-align: center;
+  max-width: 480px;
+  margin: 20px auto;
+}
+
+.sedentary-icon {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+
+.sedentary-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.sedentary-desc {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.sedentary-interval {
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.sedentary-interval label {
+  display: block;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.interval-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.interval-input {
+  width: 100px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  color: #1890ff;
+}
+
+.interval-input:focus {
+  outline: none;
+  border-color: #1890ff;
+}
+
+.interval-unit {
+  font-size: 14px;
+  color: #666;
+}
+
+.interval-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  padding: 6px 14px;
+  border: 1px solid #d9d9d9;
+  border-radius: 14px;
+  background: white;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.preset-btn:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.preset-btn.active {
+  background: #e6f4ff;
+  border-color: #1890ff;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.sedentary-toggle-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 16px;
+}
+
+.sedentary-toggle-btn.start {
+  background: #1890ff;
+  color: white;
+}
+
+.sedentary-toggle-btn.start:hover {
+  background: #40a9ff;
+}
+
+.sedentary-toggle-btn.stop {
+  background: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ffccc7;
+}
+
+.sedentary-toggle-btn.stop:hover {
+  background: #ffccc7;
+}
+
+.sedentary-toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sedentary-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #52c41a;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 12px;
+  padding: 4px 12px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #52c41a;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+

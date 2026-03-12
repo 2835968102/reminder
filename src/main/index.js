@@ -11,6 +11,7 @@ const store = new Store()
 let mainWindow
 let tray
 let scheduledJobs = new Map()
+let sedentaryTimer = null
 
 function createWindow() {
   const isDev = process.env.NODE_ENV === 'development'
@@ -216,6 +217,21 @@ app.whenReady().then(() => {
   }
   loadScheduledJobs()
 
+  // 恢复久坐提醒
+  const sedentary = store.get('sedentary', { enabled: false, intervalMinutes: 30 })
+  if (sedentary.enabled) {
+    const ms = sedentary.intervalMinutes * 60 * 1000
+    sedentaryTimer = setInterval(() => {
+      const current = store.get('sedentary', { enabled: false, intervalMinutes: 30 })
+      if (!current.enabled) {
+        clearInterval(sedentaryTimer)
+        sedentaryTimer = null
+        return
+      }
+      showSedentaryNotification(current.intervalMinutes)
+    }, ms)
+  }
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
@@ -306,3 +322,74 @@ ipcMain.handle('delete-reminder', (_, id) => {
 
   return true
 })
+
+// 久坐提醒 IPC
+ipcMain.handle('get-sedentary', () => {
+  return store.get('sedentary', { enabled: false, intervalMinutes: 30 })
+})
+
+ipcMain.handle('set-sedentary', (_, settings) => {
+  store.set('sedentary', settings)
+
+  // 清除已有计时器
+  if (sedentaryTimer) {
+    clearInterval(sedentaryTimer)
+    sedentaryTimer = null
+  }
+
+  if (settings.enabled) {
+    const ms = settings.intervalMinutes * 60 * 1000
+    sedentaryTimer = setInterval(() => {
+      const sedentary = store.get('sedentary', { enabled: false, intervalMinutes: 30 })
+      if (!sedentary.enabled) {
+        clearInterval(sedentaryTimer)
+        sedentaryTimer = null
+        return
+      }
+      showSedentaryNotification(sedentary.intervalMinutes)
+    }, ms)
+  }
+
+  return settings
+})
+
+function showSedentaryNotification(intervalMinutes) {
+  const isDev = process.env.NODE_ENV === 'development'
+  const publicPath = isDev ? path.join(process.cwd(), 'public') : path.join(process.resourcesPath, 'public')
+  const iconPath = path.join(publicPath, 'icon.ico')
+
+  const notificationOptions = {
+    title: '🧘 久坐提醒',
+    body: `你已久坐 ${intervalMinutes} 分钟，起来活动一下吧！`,
+    silent: false
+  }
+
+  try {
+    if (require('fs').existsSync(iconPath)) {
+      notificationOptions.icon = iconPath
+    }
+  } catch (e) {}
+
+  try {
+    if (Notification.isSupported()) {
+      const notification = new Notification(notificationOptions)
+      notification.show()
+      notification.on('click', () => {
+        mainWindow.show()
+        mainWindow.focus()
+      })
+    }
+  } catch (e) {
+    console.log('久坐提醒通知发送失败:', e.message)
+  }
+
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('show-reminder-popup', {
+      id: 'sedentary',
+      title: '起来活动一下！',
+      content: `你已久坐 ${intervalMinutes} 分钟，建议站起来伸展一下身体。`,
+      repeatType: 'interval',
+      intervalMinutes
+    })
+  }
+}
