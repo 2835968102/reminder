@@ -1,0 +1,257 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header h1 {
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.add-form {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: #1890ff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #40a9ff;
+}
+
+.btn-danger {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #ff7875;
+}
+
+.btn-success {
+  background-color: #52c41a;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #73d13d;
+}
+
+.reminder-list {
+  display: grid;
+  gap: 15px;
+}
+
+.reminder-item {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: transform 0.2s;
+}
+
+.reminder-item:hover {
+  transform: translateY(-2px);
+}
+
+.reminder-item.disabled {
+  opacity: 0.6;
+}
+
+.reminder-content {
+  flex: 1;
+}
+
+.reminder-content h3 {
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.reminder-content p {
+  color: #666;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.reminder-time {
+  color: #1890ff;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.reminder-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state p {
+  font-size: 16px;
+}
+
+/* 提醒弹窗遮罩 */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 弹窗主体 */
+.popup-box {
+  background: white;
+  border-radius: 12px;
+  padding: 32px 36px;
+  min-width: 320px;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.popup-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.popup-header {
+  font-size: 13px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.popup-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.popup-content {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.popup-time {
+  font-size: 13px;
+  color: #1890ff;
+  margin-bottom: 6px;
+}
+
+.popup-repeat {
+  font-size: 13px;
+  color: #52c41a;
+  margin-bottom: 20px;
+}
+
+.popup-close-btn {
+  margin-top: 16px;
+  padding: 10px 36px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.popup-close-btn:hover {
+  background-color: #40a9ff;
+}
